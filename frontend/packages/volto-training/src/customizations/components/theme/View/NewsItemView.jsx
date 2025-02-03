@@ -10,6 +10,7 @@ import { hasBlocksData } from '@plone/volto/helpers/Blocks/Blocks';
 import { flattenHTMLToAppURL } from '@plone/volto/helpers/Url/Url';
 import RenderBlocks from '@plone/volto/components/theme/View/RenderBlocks';
 import config from '@plone/volto/registry';
+import FormattedDate from '@plone/volto/components/theme/FormattedDate/FormattedDate';
 
 /**
  * NewsItemView view component class.
@@ -22,12 +23,13 @@ const NewsItemView = ({ content }) => {
   const Container =
     config.getComponent({ name: 'Container' }).component || SemanticContainer;
 
-  console.log('Has blocks?:', hasBlocksData(content));
-  console.log('Content:', content);
-
   return hasBlocksData(content) ? (
     <Container id="page-document" className="view-wrapper newsitem-view">
-      {content.effective}
+      {content.review_state === 'published' && content.effective && (
+        <p>
+          <FormattedDate date={content.effective} includeTime />
+        </p>
+      )}
       <RenderBlocks content={content} />
     </Container>
   ) : (
@@ -41,7 +43,6 @@ const NewsItemView = ({ content }) => {
       {content.description && (
         <p className="documentDescription">{content.description}</p>
       )}
-      {content.effective}
       {content.image && (
         <Image
           className="documentImage ui right floated image"
